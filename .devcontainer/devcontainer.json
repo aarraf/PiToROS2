@@ -1,0 +1,31 @@
+{
+  // https://docs.ros.org/en/jazzy/How-To-Guides/Setup-ROS-2-with-VSCode-and-Docker-Container.html
+  "name": "myROS2Env",
+  "build": {
+      "dockerfile": "../Dockerfile",
+  },
+  "postStartCommand": "/bin/bash",
+  "customizations": {
+      "vscode": {
+          "extensions": [
+              "ms-python.python"
+          ],
+          "settings": {
+              "python.autoComplete.extraPaths": [
+                "/opt/ros/jazzy/lib/python3.12/site-packages",
+                "/opt/ros/jazzy/local/lib/python3.12/dist-packages",
+                // add additonal packages "./src/.." here
+              ],
+              "python.analysis.extraPaths": [
+                "/opt/ros/jazzy/lib/python3.12/site-packages",
+                "/opt/ros/jazzy/local/lib/python3.12/dist-packages",
+                // add additonal packages "./src/.." here
+              ],
+
+           }
+          
+      }
+  },
+
+
+}

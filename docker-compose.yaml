@@ -1,0 +1,50 @@
+x-logging:
+  &default-logging
+  options:
+    max-size: '12m'
+    max-file: '5'
+  driver: json-file
+
+services:
+
+
+  ros2_dev:
+    # Container for development. Install new packages etc. 
+    container_name: myROS2_dev
+    build: .
+    volumes:
+      - ./bashhistory:/commandhistory #for command history
+      - ./:/home/ros2_dev # current folder
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    command: bash 
+    #entrypoint: ./update_ros_dep.sh # Uncomment if new package dependencies need to be installed
+    logging: *default-logging
+    #restart: unless-stopped
+
+  ros2_bridge:
+    # ROS2 Bridge for communication with roslibpy
+    container_name: myROS2_bridge
+    build: .
+    volumes:
+      - ./:/home/ros2_dev # current folder
+    ports:
+      - '9090:9090' # ROS2 bridge-server
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    command: bash -c "source install/setup.bash && ros2 launch rosbridge_server rosbridge_websocket_launch.xml"
+    logging: *default-logging
+    #restart: unless-stopped
+
+  ros2_listener:
+    # Simple listener to write published data to terminal
+    container_name: myROS2_listener
+    build: .
+    volumes:
+      - ./:/home/ros2_dev # current folder
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    command: bash -c "source install/setup.bash && ros2 run py_pubsub custom_listener"
+    #entrypoint: ./update_ros_dep.sh # Uncomment if new package dependencies need to be installed
+    logging: *default-logging
+    #restart: unless-stopped
